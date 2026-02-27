@@ -1,0 +1,10 @@
+[project]
+name = "super_hubo"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "0.1"
+dependencies = [
+    "qubovert",
+    "numpy",
+    "planqk-service-sdk"
+]

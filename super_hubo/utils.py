@@ -8,7 +8,7 @@ class Edge:
   def __init__(self, v1: Vertex, v2: Vertex):
     self._vertices = {v1, v2}
   def __repr__(self) -> str:
-    return f"{self.v1}->{self.v2}"
+    return f"{self._vertices}"
   def vertices(self):
     return self._vertices
 

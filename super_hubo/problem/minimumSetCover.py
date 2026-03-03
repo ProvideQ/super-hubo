@@ -32,7 +32,10 @@ class MinimumSetCover(Problem):
         for i in range(num_subsets):
             H -= y[i]
 
-        return -H
+        H = -H
+        H.set_mapping({f"y{n}": n for n in range(num_subsets)})
+
+        return H
 
     def convert_solution(self, solution):
 
@@ -53,10 +56,4 @@ class MinimumSetCover(Problem):
                         total_included_set.update(self._subsets[c_i])
                         break
 
-        result = {}
-        for i in range(len(self._subsets)):
-            result[i] = i in included_sets
-
-        return result
-
-
+        return {i: (i in included_sets) for i in range(len(self._subsets))}

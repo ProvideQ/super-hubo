@@ -1,4 +1,4 @@
-from qubovert import boolean_var, PUBO
+from qubovert import PUBO
 from qubovert.problems import Problem
 
 from super_hubo.utils import Graph
@@ -21,7 +21,7 @@ class EdgeCover(Problem):
         self._delta = [[e for e in self._edges if i in e.vertices()] for i in self._vertices]
   
     def to_pubo(self):
-        x = [boolean_var("x%d" % i) for i in range(len(self._edges))]
+        x = [PUBO.create_var("x%d" % i) for i in range(len(self._edges))]
     
         if not self._delta:
             self.calc_delta() 
@@ -37,13 +37,9 @@ class EdgeCover(Problem):
         for i in range(len(self._edges)):
             H -= x[i]
 
+        H.refresh()
         # invert sign of maximization problem for minimizing solver
-        H = -H
-
-
-        H.set_mapping({f"x{n}": n for n in range(len(self._edges))})
-
-        return H
+        return -H
 
     def convert_solution(self, solution):
 
@@ -53,7 +49,7 @@ class EdgeCover(Problem):
         if not self._delta:
             self.calc_delta()
 
-        included_edges = [i for i in solution.keys() if solution[i] == 1]
+        included_edges = [int(i[1:]) for i in solution.keys() if solution[i] == 1]
 
         total_included_vertices = set()
         for included_edge in included_edges:
@@ -63,5 +59,7 @@ class EdgeCover(Problem):
         for uncovered_vertex in set(self._vertices).difference(total_included_vertices):
             new_edge = self._delta[self._edges.index(uncovered_vertex)][0]
             included_edges.append(new_edge)
-        
-        return {i: (i in included_edges) for i in range(len(self._edges))}
+
+        included_set = set(included_edges)
+
+        return {i: (i in included_set) for i in range(len(self._edges))}

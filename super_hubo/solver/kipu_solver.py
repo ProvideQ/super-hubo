@@ -39,7 +39,7 @@ class KipuSolver(Solver):
             raise RuntimeError("Could not retrieve result from solver.")
 
         sorted_keys = sorted(result["mapped_solution"].keys(), key=lambda k: int(k))
-        sorted_result = {int(key) : result["mapped_solution"][key] for key in sorted_keys} 
+        sorted_result = {hubo.reverse_mapping(int(key)) : result["mapped_solution"][key] for key in sorted_keys} 
 
         cost = result.get("cost")
 

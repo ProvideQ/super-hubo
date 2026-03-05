@@ -1,4 +1,4 @@
-from qubovert import boolean_var, PUBO
+from qubovert import PUBO
 from qubovert.problems import Problem
 
 class MinimumSetCover(Problem):
@@ -18,7 +18,7 @@ class MinimumSetCover(Problem):
         num_subsets = len(self._subsets)
         num_elements = len(self._universe)
 
-        y = [boolean_var("y%d" % i) for i in range(num_subsets)]
+        y = [PUBO.create_var("y%d" % i) for i in range(num_subsets)]
         x = [[self._universe[a] in self._subsets[i] for i in range(num_subsets)] for a in range(num_elements)]
 
         H = PUBO()
@@ -32,17 +32,16 @@ class MinimumSetCover(Problem):
         for i in range(num_subsets):
             H -= y[i]
 
-        H = -H
-        H.set_mapping({f"y{n}": n for n in range(num_subsets)})
-
-        return H
+        H.refresh()
+        # invert sign of maximization problem for minimizing solver
+        return -H
 
     def convert_solution(self, solution):
 
         if not isinstance(solution, dict):
                 solution = dict(enumerate(solution))
 
-        included_sets = [i for i in solution.keys() if solution[i] == 1]
+        included_sets = [int(i[1:]) for i in solution.keys() if solution[i] == 1]
 
         total_included_set = set()
         for included_set_index in included_sets:
@@ -55,5 +54,7 @@ class MinimumSetCover(Problem):
                         included_sets.append(c_i)
                         total_included_set.update(self._subsets[c_i])
                         break
+        
+        included_set = set(included_sets)
 
-        return {i: (i in included_sets) for i in range(len(self._subsets))}
+        return {i: (i in included_set) for i in range(len(self._subsets))}

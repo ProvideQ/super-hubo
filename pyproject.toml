@@ -1,10 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "super_hubo"
+version = "0.1"
 readme = "README.md"
 requires-python = ">=3.10"
-version = "0.1"
 dependencies = [
     "qubovert",
     "numpy",
     "planqk-service-sdk"
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["super_hubo*"]

@@ -57,8 +57,8 @@ class EdgeCover(Problem):
 
 
         for uncovered_vertex in set(self._vertices).difference(total_included_vertices):
-            new_edge = self._delta[self._edges.index(uncovered_vertex)][0]
-            included_edges.append(new_edge)
+            new_edge = self._delta[self._vertices.index(uncovered_vertex)][0]
+            included_edges.append(self._edges.index(new_edge))
 
         included_set = set(included_edges)
 
